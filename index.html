@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fisica Classica – Introduzione</title>
+<style>
+:root{
+  --bg:#f4f5f8;--surface:#fff;--primary:#2563eb;--primary-d:#1d4ed8;--accent:#ff7043;
+  --text:#1f2430;--muted:#878d9e;--border:#e4e7ef;--soft:#f2f4f9;
+  --c1:#1565c0;--c2:#ef6c00;--c3:#2e7d32;--c4:#8e24aa;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  font-size:clamp(15px,2.4vw,17px);line-height:1.6}
+header{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:1rem 1.1rem;position:sticky;top:0;z-index:10}
+header h1{margin:0;font-size:clamp(1.15rem,4.2vw,1.5rem);font-weight:800}
+header .sub{font-size:.86em;color:var(--muted);margin-top:.15rem}
+nav.main{background:var(--surface);display:flex;gap:.5rem;overflow-x:auto;
+  padding:.65rem 1rem;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:5;scrollbar-width:thin}
+nav.main button{flex:0 0 auto;display:flex;align-items:center;gap:.42rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:999px;
+  padding:.32rem .82rem .32rem .34rem;font-size:.85em;color:var(--muted);
+  cursor:pointer;white-space:nowrap;font-family:inherit;min-height:38px}
+nav.main button .n{width:21px;height:21px;border-radius:50%;background:var(--soft);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;
+  font-size:.82em;font-weight:700;flex:0 0 auto}
+nav.main button.active{background:var(--text);color:#fff;border-color:var(--text);font-weight:600}
+nav.main button.active .n{background:#fff;color:var(--text)}
+main{padding:1.1rem;max-width:1000px;margin:0 auto}
+section.scene{display:none}
+section.scene.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:1.1rem 1.15rem;margin-bottom:1rem}
+.card h2{margin-top:0;color:var(--text);font-size:1.18em;font-weight:800}
+.card h3{margin:.85rem 0 .3rem;color:var(--primary-d);font-size:1em}
+.card ul{margin:.4rem 0;padding-left:1.25rem}
+.formula{background:var(--soft);border-left:3px solid var(--primary);
+  padding:.65rem .85rem;margin:.8rem 0;border-radius:6px;
+  font-family:"Cambria Math","STIX Two Math",Georgia,serif;font-size:1.05em;
+  overflow-x:auto;white-space:pre;text-align:center}
+.tip{background:#eef7ee;border-left:3px solid #2e7d32;padding:.55rem .85rem;
+  margin:.55rem 0;border-radius:6px;font-size:.92em}
+.warn{background:#fff7e6;border-left:3px solid #f0a020;padding:.55rem .85rem;
+  margin:.55rem 0;border-radius:6px;font-size:.92em}
+.hook{background:linear-gradient(135deg,#eef3ff 0%,#f4f0ff 100%);
+  border-left:3px solid var(--primary);padding:.75rem 1rem;margin:.6rem 0 1rem;
+  border-radius:8px;font-size:.97em;color:var(--text)}
+.simwrap{display:grid;grid-template-columns:1fr 1fr;gap:1rem;
+  align-items:start;margin-bottom:1rem}
+.panel{background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:1rem}
+.panel-lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin-bottom:.7rem}
+@media(max-width:760px){.simwrap{grid-template-columns:1fr}}
+.ctrl{display:grid;gap:.6rem}
+.ctrl label{display:flex;align-items:center;gap:.55rem;font-size:.9em}
+.ctrl label .nm{color:var(--muted);white-space:nowrap}
+.ctrl label input[type=range]{flex:1;min-width:60px;min-height:30px;accent-color:var(--primary)}
+.ctrl label .v{min-width:3.3em;text-align:right;font-weight:700;
+  color:var(--primary-d);font-variant-numeric:tabular-nums}
+.ctrl select{padding:.45rem;border:1px solid var(--border);border-radius:7px;
+  font-size:1em;background:var(--surface);width:100%;font-family:inherit}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
+  gap:.4rem;margin-top:.85rem;font-size:.87em}
+.read .it{background:var(--soft);padding:.42rem .55rem;border-radius:7px}
+.read .it .l{color:var(--muted);font-size:.78em;display:block;margin-bottom:.1rem}
+.read .it .v{font-weight:700;font-variant-numeric:tabular-nums}
+svg.sim{width:100%;height:auto;background:#fbfcfe;border:1px solid var(--border);
+  border-radius:9px;display:block;font-family:sans-serif}
+.anim-btn{width:100%;background:var(--primary);color:#fff;border:0;border-radius:9px;
+  padding:.6rem 1rem;font-size:.9em;cursor:pointer;font-family:inherit;
+  margin-top:.75rem;font-weight:600}
+.anim-btn:hover{background:var(--primary-d)}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:.8rem}
+.home-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:1rem;cursor:pointer;text-align:left;font-size:1em;
+  font-family:inherit;color:inherit;width:100%;transition:border-color .15s,transform .15s}
+.home-card:hover{border-color:var(--primary);transform:translateY(-2px)}
+.home-card .ico{font-size:1.7em;display:block;margin-bottom:.35rem}
+.home-card strong{color:var(--text);display:block;margin-bottom:.15rem}
+.home-card span{color:var(--muted);font-size:.87em}
+.ebar-wrap{margin-top:.75rem}
+.ebar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;font-size:.85em}
+.ebar-lbl{min-width:30px;color:var(--muted)}
+.ebar-bg{flex:1;background:#e9eaf3;border-radius:4px;height:14px;overflow:hidden}
+.ebar-fill{height:100%;border-radius:4px;transition:width .05s linear}
+.ebar-val{min-width:58px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;font-size:.83em}
+.quiz-kinds{display:flex;gap:.4rem;margin-bottom:.7rem}
+.quiz-kinds button{flex:1;background:#f0f1f8;border:1.5px solid var(--border);
+  border-radius:8px;padding:.5rem;font-size:.85em;cursor:pointer;font-family:inherit;color:var(--muted)}
+.quiz-kinds button.active{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:600}
+.quiz-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem;font-size:.84em}
+.quiz-bar-wrap{background:#d8dce8;border-radius:999px;height:7px;margin-bottom:.9rem;overflow:hidden}
+.quiz-bar-fill{background:var(--primary);height:100%;border-radius:999px;transition:width .35s}
+.quiz-q{font-weight:600;margin:.2rem 0 .75rem;line-height:1.45;font-size:.96em}
+.quiz-opts{display:grid;gap:.4rem;margin-bottom:.45rem}
+.quiz-btn{background:#f0f1f8;border:1.5px solid var(--border);border-radius:8px;
+  padding:.55rem .85rem;text-align:left;cursor:pointer;font-size:.88em;
+  font-family:inherit;color:var(--text);line-height:1.35;transition:background .12s,border-color .12s}
+.quiz-btn:not(:disabled):hover{background:#e3e0f3;border-color:var(--primary)}
+.quiz-btn:disabled{cursor:default}
+.quiz-btn.correct{background:#c8e6c9!important;border-color:#388e3c!important;color:#1b5e20;font-weight:600}
+.quiz-btn.wrong{background:#ffcdd2!important;border-color:#c62828!important;color:#b71c1c}
+.quiz-exp{padding:.55rem .85rem;border-radius:8px;font-size:.86em;line-height:1.5;margin:.45rem 0}
+.quiz-exp.ok{background:#e8f5e9;border-left:3px solid #388e3c;color:#1b5e20}
+.quiz-exp.no{background:#ffebee;border-left:3px solid #c62828;color:#b71c1c}
+.quiz-nav{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap}
+.quiz-next{background:var(--primary);color:#fff;border:0;border-radius:8px;
+  padding:.48rem 1.1rem;font-size:.88em;cursor:pointer;font-family:inherit;margin-left:auto}
+.quiz-next:hover{background:var(--primary-d)}
+.quiz-back{background:var(--soft);color:var(--text);border:1.5px solid var(--border);
+  border-radius:8px;padding:.48rem 1rem;font-size:.88em;cursor:pointer;font-family:inherit}
+.quiz-back:hover{border-color:var(--primary)}
+.quiz-done{text-align:center;padding:.7rem 0}
+.quiz-score-big{font-size:2.3em;font-weight:800;color:var(--primary-d);display:block;margin-bottom:.25rem}
+.quiz-msg{color:var(--muted);margin:.15rem 0 .8rem;font-size:.93em}
+.quiz-restart{background:var(--primary);color:#fff;border:0;border-radius:8px;
+  padding:.48rem 1.3rem;font-size:.88em;cursor:pointer;font-family:inherit}
+.quiz-restart:hover{background:var(--primary-d)}
+@media(max-width:480px){main{padding:.75rem}.card{padding:.9rem}.panel{padding:.85rem}}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚡ Fisica Classica</h1>
+  <div class="sub">Introduzione per il liceo · grandezze, cinematica, dinamica &amp; energia</div>
+</header>
+<nav class="main" id="mainNav">
+  <button data-tab="home" class="active"><span class="n">⌂</span>Home</button>
+  <button data-tab="grandezze"><span class="n">1</span>Grandezze</button>
+  <button data-tab="cinematica"><span class="n">2</span>Cinematica</button>
+  <button data-tab="dinamica"><span class="n">3</span>Dinamica</button>
+  <button data-tab="energia"><span class="n">4</span>Energia</button>
+</nav>
+<main>
+
+<!-- HOME -->
+<section class="scene active" id="home">
+  <div class="card">
+    <h2>Benvenuto nella fisica classica ⚡</h2>
+    <p>La fisica studia come funziona l'universo: dal moto di un pallone al volo di un razzo, dalla caduta di una mela all'orbita dei pianeti. In questa app esplori i <strong>quattro mattoni fondamentali</strong> della fisica classica attraverso teoria interattiva, simulazioni animate e quiz.</p>
+    <div class="hook">🤔 <strong>Pensaci:</strong> perché la Luna non ci cade addosso pur essendo attratta dalla Terra? Perché un sasso e una piuma cadono alla stessa velocità nel vuoto? Perché riesci a intuire quanto pesa un oggetto senza toccarlo? La fisica risponde — e le risposte sono sorprendenti.</div>
+    <p>Per ogni argomento: una <strong>domanda-hook</strong> che stimola la curiosità, la <strong>teoria essenziale</strong> con formule, una <strong>simulazione animata interattiva</strong> e due <strong>quiz</strong> (teoria + calcolo) per mettere alla prova ciò che hai imparato.</p>
+    <div class="tip">💡 Strategia: leggi la domanda-hook e <em>prova a risponderci</em> prima di leggere la teoria. Poi usa i cursori della simulazione per vedere la risposta prendere vita.</div>
+  </div>
+  <div class="home-grid">
+    <button class="home-card" data-go="grandezze"><span class="ico">📏</span><strong>Grandezze e misure</strong><span>Unità SI, notazione scientifica, prefissi</span></button>
+    <button class="home-card" data-go="cinematica"><span class="ico">🏃</span><strong>Cinematica</strong><span>MRU, MRUA, caduta libera, grafici</span></button>
+    <button class="home-card" data-go="dinamica"><span class="ico">⚖️</span><strong>Dinamica</strong><span>Le tre leggi di Newton, forze, piano inclinato</span></button>
+    <button class="home-card" data-go="energia"><span class="ico">🔋</span><strong>Energia e lavoro</strong><span>Lavoro, Ec, Ep e conservazione dell'energia</span></button>
+  </div>
+</section>
+
+<!-- GRANDEZZE -->
+<section class="scene" id="grandezze">
+  <div class="card">
+    <h2>📏 Grandezze fisiche e misure</h2>
+    <div class="hook">🤔 <strong>Domanda:</strong> Il tuo cellulare pesa circa 200 grammi. Espresso in microgrammi, quanto è? E in tonnellate? La notazione scientifica esiste proprio per non impazzire con gli zeri.</div>
+    <h3>Il Sistema Internazionale (SI)</h3>
+    <p>Tutte le misure fisiche si basano su <strong>7 grandezze fondamentali</strong>. Le più usate in fisica classica:</p>
+    <ul>
+      <li><strong>Lunghezza</strong> → metro (m)</li>
+      <li><strong>Massa</strong> → kilogrammo (kg)</li>
+      <li><strong>Tempo</strong> → secondo (s)</li>
+    </ul>
+    <p>Le <strong>grandezze derivate</strong> si ottengono combinando quelle fondamentali: velocità (m/s), forza (N = kg·m/s²), energia (J = kg·m²/s²).</p>
+    <h3>Prefissi SI</h3>
+    <div class="formula">nano (n) = 10⁻⁹  ·  micro (μ) = 10⁻⁶  ·  milli (m) = 10⁻³
+kilo (k) = 10³   ·  Mega (M) = 10⁶   ·  Giga (G) = 10⁹</div>
+    <h3>Notazione scientifica</h3>
+    <p>Un numero si scrive come <strong>N × 10<sup>n</sup></strong> con 1 ≤ N &lt; 10:</p>
+    <div class="formula">300 000 000 m/s  =  3 × 10⁸ m/s   (velocità della luce)
+0.000 000 1 m    =  1 × 10⁻⁷ m     (spessore di un capello)</div>
+    <div class="tip">💡 Esponente positivo → numero grande; negativo → numero piccolo. Sposta la virgola di tanti posti quant'è l'esponente.</div>
+  </div>
+  <div class="simwrap">
+    <div class="panel">
+      <div class="panel-lbl">Esplora la scala</div>
+      <div class="ctrl">
+        <label>
+          <span class="nm">Esponente n</span>
+          <input type="range" id="gExp" min="-9" max="9" value="0" step="1">
+          <span class="v" id="gExpV">0</span>
+        </label>
+        <label>
+          <span class="nm">Mantissa</span>
+          <input type="range" id="gMant" min="1" max="9.9" value="1" step="0.1">
+          <span class="v" id="gMantV">1.0</span>
+        </label>
+        <label>
+          <span class="nm">Grandezza</span>
+          <select id="gUnit">
+            <option value="m">Lunghezza (m)</option>
+            <option value="kg">Massa (kg)</option>
+            <option value="s">Tempo (s)</option>
+          </select>
+        </label>
+      </div>
+      <div class="read">
+        <div class="it"><span class="l">Notazione sci.</span><span class="v" id="gSci">—</span></div>
+        <div class="it"><span class="l">Prefisso SI</span><span class="v" id="gPfx">—</span></div>
+        <div class="it"><span class="l">Esempio reale</span><span class="v" id="gEx" style="font-size:.75em;line-height:1.3">—</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-lbl">Scala logaritmica</div>
+      <svg class="sim" id="gSvg" viewBox="0 0 300 260"></svg>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🧠 Quiz – Grandezze e misure</h2>
+    <div class="quiz-kinds">
+      <button class="active" data-qkind="teoria" data-sec="grandezze">📖 Teoria</button>
+      <button data-qkind="calcolo" data-sec="grandezze">🔢 Calcolo</button>
+    </div>
+    <div id="quizGrandezze"></div>
+  </div>
+</section>
+
+<!-- CINEMATICA -->
+<section class="scene" id="cinematica">
+  <div class="card">
+    <h2>🏃 Cinematica</h2>
+    <div class="hook">🤔 <strong>Domanda:</strong> Lasci cadere simultaneamente una piuma e un sasso dalla stessa altezza nel vuoto. Quale arriva prima? La risposta di Galileo sconvolse il mondo scientifico del 1600 — e ancora sorprende.</div>
+    <h3>Moto Rettilineo Uniforme (MRU)</h3>
+    <p>Velocità costante, nessuna accelerazione. La posizione cresce <em>linearmente</em>:</p>
+    <div class="formula">s(t) = s₀ + v · t</div>
+    <h3>Moto Rettilineo Uniformemente Accelerato (MRUA)</h3>
+    <p>Forza costante → accelerazione costante → velocità cresce linearmente:</p>
+    <div class="formula">v(t) = v₀ + a · t
+s(t) = s₀ + v₀·t + ½·a·t²
+v² = v₀² + 2·a·Δs</div>
+    <h3>Caduta libera</h3>
+    <p>MRUA verticale con a = g ≈ 9.81 m/s². Nel vuoto <strong>tutti i corpi cadono alla stessa velocità</strong>, indipendentemente dalla massa.</p>
+    <div class="formula">h(t) = h₀ − ½·g·t²      v(t) = g·t</div>
+    <div class="warn">⚠️ Nella vita reale l'attrito dell'aria fa la differenza — ecco perché la piuma cade più lentamente fuori dal vuoto.</div>
+  </div>
+  <div class="simwrap">
+    <div class="panel">
+      <div class="panel-lbl">Controlli</div>
+      <div class="ctrl">
+        <label>
+          <span class="nm">Tipo moto</span>
+          <select id="cType">
+            <option value="mru">MRU (v costante)</option>
+            <option value="mrua">MRUA (accelerato)</option>
+            <option value="caduta">Caduta libera</option>
+          </select>
+        </label>
+        <label>
+          <span class="nm">v₀ (m/s)</span>
+          <input type="range" id="cV0" min="0" max="20" value="5" step="0.5">
+          <span class="v" id="cV0V">5.0</span>
+        </label>
+        <label>
+          <span class="nm">a (m/s²)</span>
+          <input type="range" id="cAcc" min="-5" max="10" value="2" step="0.5">
+          <span class="v" id="cAccV">2.0</span>
+        </label>
+      </div>
+      <div class="read">
+        <div class="it"><span class="l">Posizione</span><span class="v" id="cPos">0.0 m</span></div>
+        <div class="it"><span class="l">Velocità</span><span class="v" id="cVel">5.0 m/s</span></div>
+        <div class="it"><span class="l">Tempo</span><span class="v" id="cTime">0.0 s</span></div>
+        <div class="it"><span class="l">Accel.</span><span class="v" id="cAccR">2.0 m/s²</span></div>
+      </div>
+      <button class="anim-btn" id="cBtn">▶ Anima</button>
+    </div>
+    <div class="panel">
+      <div class="panel-lbl">Simulazione</div>
+      <svg class="sim" id="cSvg" viewBox="0 0 300 240"></svg>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🧠 Quiz – Cinematica</h2>
+    <div class="quiz-kinds">
+      <button class="active" data-qkind="teoria" data-sec="cinematica">📖 Teoria</button>
+      <button data-qkind="calcolo" data-sec="cinematica">🔢 Calcolo</button>
+    </div>
+    <div id="quizCinematica"></div>
+  </div>
+</section>
+
+<!-- DINAMICA -->
+<section class="scene" id="dinamica">
+  <div class="card">
+    <h2>⚖️ Dinamica – Le leggi di Newton</h2>
+    <div class="hook">🤔 <strong>Domanda:</strong> La Luna è attratta dalla Terra con una forza enorme. Perché non ci cade sopra? E perché spingere un muro con tutta la forza che hai non lo fa muovere? Newton ha risposto a tutto con tre leggi elegantissime.</div>
+    <h3>Prima legge – Inerzia</h3>
+    <p>Un corpo rimane in quiete o in MRU finché una forza esterna non agisce su di esso. L'inerzia è la "resistenza al cambiamento" — proporzionale alla massa.</p>
+    <div class="formula">ΣF = 0  ⟹  a = 0  (v = costante)</div>
+    <h3>Seconda legge – F = ma</h3>
+    <div class="formula">ΣF = m · a      [N = kg · m/s²]</div>
+    <h3>Terza legge – Azione e reazione</h3>
+    <p>Per ogni azione esiste una reazione uguale e contraria. Il razzo funziona proprio così!</p>
+    <div class="formula">F₁₂ = −F₂₁</div>
+    <h3>Peso e piano inclinato</h3>
+    <div class="formula">P = m·g       N = m·g·cosθ       F‖ = m·g·sinθ</div>
+    <div class="tip">💡 Massa (kg) e peso (N) non sono la stessa cosa! Sulla Luna pesi 6× meno, ma la tua massa è identica.</div>
+  </div>
+  <div class="simwrap">
+    <div class="panel">
+      <div class="panel-lbl">Piano inclinato</div>
+      <div class="ctrl">
+        <label>
+          <span class="nm">Massa (kg)</span>
+          <input type="range" id="dMass" min="1" max="20" value="5" step="1">
+          <span class="v" id="dMassV">5</span>
+        </label>
+        <label>
+          <span class="nm">Angolo θ (°)</span>
+          <input type="range" id="dAngle" min="0" max="75" value="30" step="1">
+          <span class="v" id="dAngleV">30°</span>
+        </label>
+        <label>
+          <span class="nm">Attrito μ</span>
+          <input type="range" id="dFric" min="0" max="0.8" value="0.2" step="0.05">
+          <span class="v" id="dFricV">0.20</span>
+        </label>
+      </div>
+      <div class="read">
+        <div class="it"><span class="l">Peso P</span><span class="v" id="dW">—</span></div>
+        <div class="it"><span class="l">F‖ piano</span><span class="v" id="dFpar">—</span></div>
+        <div class="it"><span class="l">Normale N</span><span class="v" id="dNorm">—</span></div>
+        <div class="it"><span class="l">Attrito</span><span class="v" id="dFfr">—</span></div>
+        <div class="it"><span class="l">F netta</span><span class="v" id="dFnet">—</span></div>
+        <div class="it"><span class="l">Accel.</span><span class="v" id="dAcc">—</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-lbl">Diagramma forze</div>
+      <svg class="sim" id="dSvg" viewBox="0 0 300 280"></svg>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🧠 Quiz – Dinamica</h2>
+    <div class="quiz-kinds">
+      <button class="active" data-qkind="teoria" data-sec="dinamica">📖 Teoria</button>
+      <button data-qkind="calcolo" data-sec="dinamica">🔢 Calcolo</button>
+    </div>
+    <div id="quizDinamica"></div>
+  </div>
+</section>
+
+<!-- ENERGIA -->
+<section class="scene" id="energia">
+  <div class="card">
+    <h2>🔋 Energia e lavoro</h2>
+    <div class="hook">🤔 <strong>Domanda:</strong> Lasci cadere una pallina da 2 metri. Rimbalza. Se il rimbalzo fosse perfetto — senza perdite di energia — dove tornerebbe ogni volta? Quanto in alto arriva realmente dopo il primo rimbalzo?</div>
+    <h3>Lavoro</h3>
+    <div class="formula">W = F · s · cosθ      [J = N·m]</div>
+    <p>Positivo se la forza aiuta il moto, negativo se lo ostacola, zero se è perpendicolare.</p>
+    <h3>Energia cinetica</h3>
+    <div class="formula">Eₖ = ½ · m · v²      [J]</div>
+    <h3>Energia potenziale gravitazionale</h3>
+    <div class="formula">Eₚ = m · g · h      [J]</div>
+    <h3>Conservazione dell'energia meccanica</h3>
+    <div class="formula">Eₖ + Eₚ = costante      (senza attrito)
+½·m·v² + m·g·h = costante</div>
+    <div class="tip">💡 La montagna russa trasforma Eₚ in Eₖ nelle discese e viceversa. Il pendolo. La Luna che orbita senza frenare nel vuoto. Tutto è conservazione dell'energia.</div>
+  </div>
+  <div class="simwrap">
+    <div class="panel">
+      <div class="panel-lbl">Pallina in caduta libera</div>
+      <div class="ctrl">
+        <label>
+          <span class="nm">Altezza h (m)</span>
+          <input type="range" id="eH" min="1" max="10" value="5" step="0.5">
+          <span class="v" id="eHV">5.0</span>
+        </label>
+        <label>
+          <span class="nm">Massa m (kg)</span>
+          <input type="range" id="eM" min="0.5" max="10" value="2" step="0.5">
+          <span class="v" id="eMV">2.0</span>
+        </label>
+      </div>
+      <div class="ebar-wrap">
+        <div class="ebar-row">
+          <span class="ebar-lbl">Eₚ</span>
+          <div class="ebar-bg"><div class="ebar-fill" id="eBarEp" style="background:#1565c0;width:100%"></div></div>
+          <span class="ebar-val" id="eValEp">—</span>
+        </div>
+        <div class="ebar-row">
+          <span class="ebar-lbl">Eₖ</span>
+          <div class="ebar-bg"><div class="ebar-fill" id="eBarEk" style="background:#ef6c00;width:0%"></div></div>
+          <span class="ebar-val" id="eValEk">0.0 J</span>
+        </div>
+        <div class="ebar-row">
+          <span class="ebar-lbl">Etot</span>
+          <div class="ebar-bg"><div class="ebar-fill" id="eBarEt" style="background:#2e7d32;width:100%"></div></div>
+          <span class="ebar-val" id="eValEt">—</span>
+        </div>
+      </div>
+      <div class="read">
+        <div class="it"><span class="l">Altezza</span><span class="v" id="eHRead">5.0 m</span></div>
+        <div class="it"><span class="l">Velocità</span><span class="v" id="eVRead">0.0 m/s</span></div>
+        <div class="it"><span class="l">Tempo</span><span class="v" id="eTRead">0.0 s</span></div>
+      </div>
+      <button class="anim-btn" id="eBtn">▶ Anima</button>
+    </div>
+    <div class="panel">
+      <div class="panel-lbl">Simulazione</div>
+      <svg class="sim" id="eSvg" viewBox="0 0 300 280"></svg>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🧠 Quiz – Energia e lavoro</h2>
+    <div class="quiz-kinds">
+      <button class="active" data-qkind="teoria" data-sec="energia">📖 Teoria</button>
+      <button data-qkind="calcolo" data-sec="energia">🔢 Calcolo</button>
+    </div>
+    <div id="quizEnergia"></div>
+  </div>
+</section>
+
+</main>
+<script>
+// Navigation
+const scenes=document.querySelectorAll('section.scene');
+const navBtns=document.querySelectorAll('nav.main button');
+function goTab(id){
+  scenes.forEach(s=>s.classList.toggle('active',s.id===id));
+  navBtns.forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+}
+navBtns.forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.tab)));
+document.querySelectorAll('.home-card').forEach(c=>c.addEventListener('click',()=>goTab(c.dataset.go)));
+
+// Superscript helper
+function sup(n){
+  const m={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+  return String(n).split('').map(c=>m[c]||c).join('');
+}
+
+// GRANDEZZE
+const gExamples={
+  m:[[-9,'Raggio atomo idrogeno'],[-7,'Virus influenzale'],[-6,'Batterio E. coli'],[-4,'Capello umano'],[-3,'Spessore foglio × 1000'],[-2,'Spessore moneta'],[0,'Matita / penna'],[1,'Altezza porta'],[2,'Campo da calcio'],[3,'1 km – passeggiata 12 min'],[6,'Diametro della Terra'],[8,'Distanza Terra-Sole'],[9,'~7 volte Terra-Sole']],
+  kg:[[-9,'Massa di una cellula'],[-6,'Granello di sabbia'],[-3,'Zolletta di zucchero'],[0,'Una mela'],[1,'Laptop'],[2,'Persona adulta ~80 kg'],[3,'Automobile'],[4,'Aereo di linea'],[6,'Portacontainer']],
+  s:[[-9,'Nanosecondo (elettronica)'],[-6,'Ciclo CPU a 1 GHz'],[-3,'Suono percorre 34 cm'],[0,'Battito cardiaco'],[1,'10 s – Usain Bolt 100 m'],[3,'~17 minuti'],[4,'~2.8 ore'],[7,'1 anno ≈ 3.15×10⁷ s'],[9,'Età universo in secondi']]
+};
+function pfx(e){return{9:'G (Giga)',6:'M (Mega)',3:'k (kilo)',0:'—',-3:'m (milli)',-6:'μ (micro)',-9:'n (nano)'}[e]||'—';}
+function gNearestEx(exp,unit){
+  const list=gExamples[unit]||[];
+  return list.reduce((b,x)=>Math.abs(x[0]-exp)<Math.abs(b[0]-exp)?x:b,list[0]||[0,'—'])[1];
+}
+function updateG(){
+  const exp=+document.getElementById('gExp').value;
+  const mant=+document.getElementById('gMant').value;
+  const unit=document.getElementById('gUnit').value;
+  document.getElementById('gExpV').textContent=exp;
+  document.getElementById('gMantV').textContent=mant.toFixed(1);
+  document.getElementById('gSci').textContent=mant.toFixed(1)+' × 10'+sup(exp)+' '+unit;
+  document.getElementById('gPfx').textContent=pfx(exp);
+  document.getElementById('gEx').textContent=gNearestEx(exp,unit);
+  drawG(exp,mant,unit);
+}
+function drawG(exp,mant,unit){
+  const svg=document.getElementById('gSvg');
+  const W=300,H=260,bx=28,bw=244,by=140,bh=20,mn=-9,mx=9;
+  const frac=(exp-mn)/(mx-mn);
+  const grad=['#c62828','#e53935','#f4511e','#fb8c00','#fdd835','#9ccc65','#43a047','#00897b','#0288d1','#1565c0','#6a1b9a','#ad1457','#880e4f','#37474f','#004d40','#006064','#01579b','#1a237e'];
+  let h='';
+  for(let i=0;i<18;i++){const x=bx+i*bw/18;h+=`<rect x="${x}" y="${by}" width="${bw/18+1}" height="${bh}" fill="${grad[i]}"/>`; }
+  const px=bx+frac*bw;
+  h+=`<polygon points="${px},${by-3} ${px-7},${by-15} ${px+7},${by-15}" fill="var(--text)"/>`;
+  h+=`<line x1="${px}" y1="${by+bh}" x2="${px}" y2="${by+bh+7}" stroke="var(--text)" stroke-width="2"/>`;
+  [-9,-6,-3,0,3,6,9].forEach(l=>{
+    const lx=bx+(l-mn)/(mx-mn)*bw;
+    h+=`<text x="${lx}" y="${by+bh+20}" text-anchor="middle" font-size="9" fill="#888">10${sup(l)}</text>`;
+    h+=`<line x1="${lx}" y1="${by+bh}" x2="${lx}" y2="${by+bh+6}" stroke="#ccc" stroke-width="1"/>`;
+  });
+  h+=`<text x="${W/2}" y="${by+bh+34}" text-anchor="middle" font-size="10" fill="var(--muted)">${unit}</text>`;
+  const emojis={m:{9:'🌌',6:'🌍',3:'🏙️',0:'✏️',-3:'📄',-6:'🦠',-9:'⚛️'},kg:{6:'🚢',3:'🚗',0:'🍎',-6:'🪨',-9:'🔬'},s:{9:'🌌',7:'📅',3:'⏰',0:'💓',-6:'💻',-9:'⚡'}};
+  const emap=emojis[unit]||{};
+  const ek=Object.keys(emap).reduce((a,b)=>Math.abs(b-exp)<Math.abs(a-exp)?b:a,'0');
+  h+=`<text x="${W/2}" y="${by-30}" text-anchor="middle" font-size="38">${emap[ek]||'📐'}</text>`;
+  h+=`<rect x="20" y="8" width="${W-40}" height="78" rx="8" fill="white" stroke="var(--border)" stroke-width="1"/>`;
+  h+=`<text x="${W/2}" y="30" text-anchor="middle" font-size="11" fill="var(--muted)">Valore</text>`;
+  h+=`<text x="${W/2}" y="58" text-anchor="middle" font-size="20" font-weight="700" fill="var(--primary)">${mant.toFixed(1)} × 10${sup(exp)}</text>`;
+  h+=`<text x="${W/2}" y="76" text-anchor="middle" font-size="10" fill="var(--muted)">${unit}</text>`;
+  svg.innerHTML=h;
+}
+['gExp','gMant','gUnit'].forEach(id=>document.getElementById(id).addEventListener('input',updateG));
+updateG();
+
+// CINEMATICA
+let cRaf=null,cRun=false;
+function cUpdate(){
+  const v0=+document.getElementById('cV0').value;
+  const acc=+document.getElementById('cAcc').value;
+  const type=document.getElementById('cType').value;
+  document.getElementById('cV0V').textContent=v0.toFixed(1);
+  document.getElementById('cAccV').textContent=acc.toFixed(1);
+  document.getElementById('cAccR').textContent=(type==='caduta'?'9.81':acc.toFixed(1))+' m/s²';
+  drawC(0,type==='caduta'?v0:0,v0,type,type==='caduta'?9.81:acc);
+}
+function drawC(t,pos,vel,type,acc){
+  const svg=document.getElementById('cSvg');
+  const W=300,H=240;
+  let h=`<defs><marker id="ca" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c62828"/></marker></defs>`;
+  h+=`<rect x="0" y="0" width="${W}" height="${H}" fill="#fbfcfe"/>`;
+  if(type==='caduta'){
+    const h0=+document.getElementById('cV0').value||5;
+    const gY=H-30,sY=20,avail=gY-sY;
+    const bY=gY-Math.min(1,Math.max(0,pos)/Math.max(h0,1))*avail;
+    h+=`<rect x="0" y="${gY}" width="${W}" height="${H-gY}" fill="#d7ccc8"/>`;
+    h+=`<line x1="0" y1="${gY}" x2="${W}" y2="${gY}" stroke="#795548" stroke-width="2"/>`;
+    h+=`<line x1="22" y1="${gY}" x2="22" y2="${sY}" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>`;
+    h+=`<line x1="17" y1="${bY}" x2="27" y2="${bY}" stroke="#888" stroke-width="1"/>`;
+    h+=`<text x="10" y="${(gY+bY)/2+4}" font-size="9" fill="#aaa" text-anchor="middle">h</text>`;
+    h+=`<circle cx="150" cy="${bY}" r="14" fill="#1565c0" opacity="0.9"/>`;
+    if(vel>0.5){const al=Math.min(45,vel*3);h+=`<line x1="150" y1="${bY+14}" x2="150" y2="${bY+14+al}" stroke="#c62828" stroke-width="2.5" marker-end="url(#ca)"/>`; }
+    h+=`<text x="${W/2}" y="14" text-anchor="middle" font-size="10" fill="var(--muted)">Caduta libera · h=${pos.toFixed(1)} m</text>`;
+  } else {
+    const trackY=H*0.6;
+    h+=`<rect x="0" y="${trackY}" width="${W}" height="8" fill="#e0e0e0"/>`;
+    for(let x=0;x<=W;x+=50){
+      h+=`<line x1="${x}" y1="${trackY-45}" x2="${x}" y2="${trackY+30}" stroke="#eee" stroke-width="1"/>`;
+      h+=`<text x="${x+2}" y="${trackY+25}" font-size="8" fill="#ccc">${x/50*10}m</text>`;
+    }
+    const bX=((pos%50)/50)*(W-40)+20;
+    h+=`<circle cx="${bX}" cy="${trackY-14}" r="14" fill="#1565c0" opacity="0.9"/>`;
+    if(Math.abs(vel)>0.3){const d=vel>0?1:-1;h+=`<line x1="${bX}" y1="${trackY-14}" x2="${bX+d*Math.min(38,Math.abs(vel)*3)}" y2="${trackY-14}" stroke="#ef6c00" stroke-width="2.5" marker-end="url(#ca)"/>`; }
+    if(Math.abs(acc)>0.1){const d=acc>0?1:-1;h+=`<line x1="${bX}" y1="${trackY+2}" x2="${bX+d*Math.min(30,Math.abs(acc)*5)}" y2="${trackY+2}" stroke="#c62828" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#ca)"/>`; }
+    h+=`<text x="${W/2}" y="14" text-anchor="middle" font-size="10" fill="var(--muted)">${type.toUpperCase()} · s=${pos.toFixed(1)} m</text>`;
+  }
+  svg.innerHTML=h;
+  document.getElementById('cPos').textContent=pos.toFixed(2)+' m';
+  document.getElementById('cVel').textContent=vel.toFixed(2)+' m/s';
+  document.getElementById('cTime').textContent=t.toFixed(2)+' s';
+}
+function cAnimate(){
+  if(cRun){cancelAnimationFrame(cRaf);cRun=false;document.getElementById('cBtn').textContent='▶ Anima';return;}
+  cRun=true;document.getElementById('cBtn').textContent='⏹ Stop';
+  const type=document.getElementById('cType').value;
+  const v0=+document.getElementById('cV0').value;
+  const acc=type==='caduta'?9.81:+document.getElementById('cAcc').value;
+  let v=v0,pos=type==='caduta'?v0:0,t=0;
+  const dt=0.016;
+  function step(){
+    if(!cRun)return;
+    t+=dt;v+=acc*dt;
+    pos=type==='caduta'?Math.max(0,pos-v*dt):pos+v*dt;
+    if(type==='caduta'&&pos<=0){pos=0;v=0;cRun=false;document.getElementById('cBtn').textContent='▶ Anima';}
+    if(type!=='caduta'&&pos>50)pos=0;
+    if(type!=='caduta'&&v<=0&&acc<0){cRun=false;document.getElementById('cBtn').textContent='▶ Anima';}
+    drawC(t,pos,v,type,acc);
+    if(cRun)cRaf=requestAnimationFrame(step);
+  }
+  cRaf=requestAnimationFrame(step);
+}
+['cV0','cAcc','cType'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{cancelAnimationFrame(cRaf);cRun=false;document.getElementById('cBtn').textContent='▶ Anima';cUpdate();}));
+document.getElementById('cBtn').addEventListener('click',cAnimate);
+cUpdate();
+
+// DINAMICA
+function dUpdate(){
+  const m=+document.getElementById('dMass').value;
+  const th=+document.getElementById('dAngle').value*Math.PI/180;
+  const mu=+document.getElementById('dFric').value;
+  const g=9.81;
+  document.getElementById('dMassV').textContent=m;
+  document.getElementById('dAngleV').textContent=Math.round(th*180/Math.PI)+'°';
+  document.getElementById('dFricV').textContent=mu.toFixed(2);
+  const W=m*g,Fp=W*Math.sin(th),N=W*Math.cos(th),Ffr=mu*N,Fn=Math.max(0,Fp-Ffr),a=Fn/m;
+  document.getElementById('dW').textContent=W.toFixed(1)+' N';
+  document.getElementById('dFpar').textContent=Fp.toFixed(1)+' N';
+  document.getElementById('dNorm').textContent=N.toFixed(1)+' N';
+  document.getElementById('dFfr').textContent=Ffr.toFixed(1)+' N';
+  document.getElementById('dFnet').textContent=Fn.toFixed(1)+' N';
+  document.getElementById('dAcc').textContent=a.toFixed(2)+' m/s²';
+  drawD(m,th*180/Math.PI,W,Fp,N,Ffr,Fn);
+}
+function arrow(x1,y1,dx,dy,col,lbl){
+  if(Math.sqrt(dx*dx+dy*dy)<1)return'';
+  const len=Math.sqrt(dx*dx+dy*dy),ux=dx/len,uy=dy/len,x2=x1+dx,y2=y1+dy;
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="2.5"/>
+<polygon points="${x2},${y2} ${x2-ux*8-uy*4},${y2-uy*8+ux*4} ${x2-ux*8+uy*4},${y2-uy*8-ux*4}" fill="${col}"/>
+<text x="${x2+ux*6}" y="${y2+uy*4+4}" font-size="9" fill="${col}">${lbl}</text>`;
+}
+function drawD(m,tDeg,W,Fp,N,Ffr,Fn){
+  const svg=document.getElementById('dSvg');
+  const W_=300,H=280,th=tDeg*Math.PI/180;
+  const ox=30,oy=H-40,pw=200;
+  const tx=ox+pw*Math.cos(th),ty=oy-pw*Math.sin(th);
+  const cx=(ox+tx)/2,cy=(oy+ty)/2;
+  let h=`<rect x="0" y="0" width="${W_}" height="${H}" fill="#fbfcfe"/>`;
+  h+=`<polygon points="${ox},${oy} ${tx},${ty} ${tx},${oy}" fill="#e8eaf6" stroke="#7986cb" stroke-width="1.5"/>`;
+  h+=`<line x1="0" y1="${oy}" x2="${W_}" y2="${oy}" stroke="#795548" stroke-width="2"/>`;
+  const bs=22;
+  h+=`<rect x="${cx-bs/2}" y="${cy-bs}" width="${bs}" height="${bs}" fill="#1565c0" opacity="0.85" transform="rotate(${-tDeg},${cx},${cy})"/>`;
+  const sc=Math.min(2.5,60/Math.max(W,1));
+  h+=arrow(cx,cy,0,W*sc*0.5,'#c62828','P');
+  h+=arrow(cx,cy,-N*sc*0.4*Math.sin(th),-N*sc*0.4*Math.cos(th),'#2e7d32','N');
+  h+=arrow(cx,cy,Fp*sc*0.4*Math.cos(th),-Fp*sc*0.4*Math.sin(th),'#ef6c00','F‖');
+  if(Ffr>0.5)h+=arrow(cx,cy,-Ffr*sc*0.4*Math.cos(th),Ffr*sc*0.4*Math.sin(th),'#8e24aa','Fr');
+  const moving=Fn>0.5;
+  h+=`<rect x="8" y="8" width="${W_-16}" height="26" rx="5" fill="${moving?'#ffebee':'#e8f5e9'}"/>`;
+  h+=`<text x="${W_/2}" y="25" text-anchor="middle" font-size="11" font-weight="700" fill="${moving?'#c62828':'#2e7d32'}">${moving?'⬇ Scivola · a='+Fn/m+'m/s²':'✓ Fermo (attrito sufficiente)'}</text>`;
+  svg.innerHTML=h;
+}
+['dMass','dAngle','dFric'].forEach(id=>document.getElementById(id).addEventListener('input',dUpdate));
+dUpdate();
+
+// ENERGIA
+let eRaf=null,eRun=false;
+function eUpdate(){
+  const h=+document.getElementById('eH').value,m=+document.getElementById('eM').value;
+  document.getElementById('eHV').textContent=h.toFixed(1);
+  document.getElementById('eMV').textContent=m.toFixed(1);
+  const Ep=m*9.81*h;
+  setEBars(Ep,0,Ep);
+  document.getElementById('eHRead').textContent=h.toFixed(1)+' m';
+  document.getElementById('eVRead').textContent='0.0 m/s';
+  document.getElementById('eTRead').textContent='0.0 s';
+  drawE(h,h,0,m);
+}
+function setEBars(Ep,Ek,Et){
+  const p=v=>Et>0?Math.round(v/Et*100):0;
+  document.getElementById('eBarEp').style.width=p(Ep)+'%';
+  document.getElementById('eBarEk').style.width=p(Ek)+'%';
+  document.getElementById('eValEp').textContent=Ep.toFixed(1)+' J';
+  document.getElementById('eValEk').textContent=Ek.toFixed(1)+' J';
+  document.getElementById('eValEt').textContent=Et.toFixed(1)+' J';
+}
+function drawE(h,h0,v,m){
+  const svg=document.getElementById('eSvg');
+  const W=300,H=280,g=9.81,gY=H-30,maxH=Math.max(h0,1);
+  const bY=gY-(h/maxH)*(gY-30);
+  let html=`<rect x="0" y="0" width="${W}" height="${H}" fill="#fbfcfe"/>`;
+  html+=`<rect x="0" y="${gY}" width="${W}" height="${H-gY}" fill="#d7ccc8"/>`;
+  html+=`<line x1="0" y1="${gY}" x2="${W}" y2="${gY}" stroke="#795548" stroke-width="2"/>`;
+  html+=`<line x1="22" y1="${gY}" x2="22" y2="28" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>`;
+  html+=`<line x1="16" y1="${gY-(h0/maxH)*(gY-30)}" x2="${W-10}" y2="${gY-(h0/maxH)*(gY-30)}" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>`;
+  html+=`<text x="${W-8}" y="${gY-(h0/maxH)*(gY-30)-4}" text-anchor="end" font-size="9" fill="#bbb">h₀=${h0.toFixed(1)}m</text>`;
+  const spd=Math.min(1,v/Math.sqrt(2*g*maxH));
+  html+=`<circle cx="150" cy="${bY}" r="13" fill="hsl(${210-spd*130},70%,${50-spd*10}%)" opacity="0.9"/>`;
+  if(v>0.5){const al=Math.min(50,v*4);html+=`<line x1="150" y1="${bY+13}" x2="150" y2="${bY+13+al}" stroke="#ef6c00" stroke-width="2.5"/><polygon points="150,${bY+13+al+7} 144,${bY+13+al} 156,${bY+13+al}" fill="#ef6c00"/>`; }
+  const Ep=m*g*h,Et=m*g*h0,Ek=Math.max(0,Et-Ep);
+  const bX=200,bW=70,bBY=50;
+  html+=`<rect x="${bX}" y="${bBY}" width="${bW}" height="10" rx="3" fill="#e3f2fd"/>`;
+  html+=`<rect x="${bX}" y="${bBY}" width="${Et>0?Ep/Et*bW:0}" height="10" rx="3" fill="#1565c0"/>`;
+  html+=`<text x="${bX+bW+4}" y="${bBY+9}" font-size="8" fill="#1565c0">Eₚ</text>`;
+  html+=`<rect x="${bX}" y="${bBY+14}" width="${bW}" height="10" rx="3" fill="#fbe9e7"/>`;
+  html+=`<rect x="${bX}" y="${bBY+14}" width="${Et>0?Ek/Et*bW:0}" height="10" rx="3" fill="#ef6c00"/>`;
+  html+=`<text x="${bX+bW+4}" y="${bBY+23}" font-size="8" fill="#ef6c00">Eₖ</text>`;
+  html+=`<text x="35" y="${(gY+bY)/2+4}" text-anchor="middle" font-size="9" fill="#aaa">h=${Math.max(0,h).toFixed(1)}m</text>`;
+  svg.innerHTML=html;
+}
+function eAnimate(){
+  if(eRun){cancelAnimationFrame(eRaf);eRun=false;document.getElementById('eBtn').textContent='▶ Anima';return;}
+  eRun=true;document.getElementById('eBtn').textContent='⏹ Stop';
+  const h0=+document.getElementById('eH').value,m=+document.getElementById('eM').value;
+  const g=9.81,Et=m*g*h0;
+  let h=h0,v=0,t=0;
+  const dt=0.016;
+  function step(){
+    if(!eRun)return;
+    t+=dt;v+=g*dt;h=Math.max(0,h-v*dt);
+    if(h<=0){h=0;v=-v*0.82;if(Math.abs(v)<0.15){v=0;eRun=false;document.getElementById('eBtn').textContent='▶ Anima';}}
+    const Ep=m*g*h,Ek=Math.max(0,0.5*m*v*v);
+    setEBars(Ep,Ek,Et);
+    drawE(h,h0,Math.abs(v),m);
+    document.getElementById('eHRead').textContent=h.toFixed(2)+' m';
+    document.getElementById('eVRead').textContent=Math.abs(v).toFixed(2)+' m/s';
+    document.getElementById('eTRead').textContent=t.toFixed(2)+' s';
+    if(eRun)eRaf=requestAnimationFrame(step);
+  }
+  eRaf=requestAnimationFrame(step);
+}
+['eH','eM'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{cancelAnimationFrame(eRaf);eRun=false;document.getElementById('eBtn').textContent='▶ Anima';eUpdate();}));
+document.getElementById('eBtn').addEventListener('click',eAnimate);
+eUpdate();
+
+// QUIZ DATA
+const QUIZ={
+  grandezze:{
+    teoria:[
+      {q:"Qual è l'unità SI della lunghezza?",opts:["Metro (m)","Centimetro (cm)","Kilometro (km)","Piede (ft)"],a:0,exp:"Il metro (m) è l'unità base SI. Centimetro e kilometro sono multipli/sottomultipli."},
+      {q:"Cosa significa il prefisso 'kilo-'?",opts:["10³ (mille)","10² (cento)","10⁶ (un milione)","10⁻³ (millesimo)"],a:0,exp:"Kilo = 10³: 1 km = 1000 m, 1 kg = 1000 g."},
+      {q:"Un numero in notazione scientifica ha la forma N × 10ⁿ con:",opts:["1 ≤ N < 10","0 ≤ N < 10","1 ≤ N < 100","N qualsiasi"],a:0,exp:"La mantissa deve essere compresa tra 1 (incluso) e 10 (escluso)."},
+      {q:"Qual è l'unità SI della massa?",opts:["Kilogrammo (kg)","Grammo (g)","Tonnellata (t)","Libbra (lb)"],a:0,exp:"Il kilogrammo è l'unica unità base SI con il prefisso 'kilo' già nel nome — curiosità storica!"},
+      {q:"La velocità (m/s) è una grandezza:",opts:["Derivata","Fondamentale","Adimensionale","Sempre vettoriale"],a:0,exp:"La velocità si ottiene combinando lunghezza (m) e tempo (s): è derivata, non fondamentale."},
+      {q:"Cosa significa μ (micro)?",opts:["10⁻⁶","10⁻³","10⁻⁹","10⁻¹²"],a:0,exp:"Micro (μ) = 10⁻⁶. 1 μm = un milionesimo di metro — dimensione tipica di un batterio."},
+      {q:"La forza (Newton) in unità SI equivale a:",opts:["kg·m/s²","kg·m/s","g·cm/s","kg/m·s"],a:0,exp:"Da F=ma: [F] = kg·m/s² = N."},
+      {q:"Il prefisso 'nano-' corrisponde a:",opts:["10⁻⁹","10⁻⁶","10⁻³","10⁻¹²"],a:0,exp:"Nano = 10⁻⁹. I chip moderni lavorano a scale di pochi nanometri!"},
+      {q:"1 joule (J) equivale a:",opts:["1 N·m","1 kg·m/s","1 W·m","1 N/m"],a:0,exp:"J = N·m = kg·m²/s² — l'energia necessaria per sollevare 102 g di 1 metro."},
+      {q:"Quanti secondi ci sono in un'ora?",opts:["3600 s","360 s","600 s","36000 s"],a:0,exp:"1 h = 60 min × 60 s = 3600 s."}
+    ],
+    calcolo:[
+      {q:"Converti 4500 m in km.",opts:["4.5 km","45 km","0.45 km","450 km"],a:0,exp:"4500 ÷ 1000 = 4.5 km."},
+      {q:"Esprimi 0.0053 in notazione scientifica.",opts:["5.3 × 10⁻³","53 × 10⁻⁴","0.53 × 10⁻²","5.3 × 10³"],a:0,exp:"Sposta la virgola di 3 posti a destra: 0.0053 = 5.3 × 10⁻³."},
+      {q:"Quanti grammi sono 2.5 kg?",opts:["2500 g","250 g","25000 g","0.25 g"],a:0,exp:"2.5 × 1000 = 2500 g."},
+      {q:"(3 × 10⁴) × (2 × 10³) = ?",opts:["6 × 10⁷","6 × 10¹²","5 × 10⁷","6 × 10⁶"],a:0,exp:"Mantisse: 3×2=6. Esponenti: 4+3=7. Risultato: 6 × 10⁷."},
+      {q:"72 km/h in m/s è:",opts:["20 m/s","72 m/s","7.2 m/s","0.72 m/s"],a:0,exp:"72 × 1000 / 3600 = 72 / 3.6 = 20 m/s."},
+      {q:"7.2 × 10³ cm convertiti in metri:",opts:["72 m","720 m","7.2 m","7200 m"],a:0,exp:"7200 cm ÷ 100 = 72 m."},
+      {q:"Quanti μm sono 1 mm?",opts:["1000 μm","100 μm","10 μm","10000 μm"],a:0,exp:"1 mm = 10⁻³ m; 1 μm = 10⁻⁶ m → rapporto = 10³ = 1000."},
+      {q:"(8 × 10⁶) ÷ (4 × 10²) = ?",opts:["2 × 10⁴","2 × 10³","4 × 10⁴","2 × 10⁸"],a:0,exp:"8÷4=2, 10⁶÷10²=10⁴ → 2 × 10⁴."},
+      {q:"Converti 180 minuti in ore.",opts:["3 h","1.8 h","18 h","0.3 h"],a:0,exp:"180 ÷ 60 = 3 h."},
+      {q:"1.5 × 10⁻² kg in grammi:",opts:["15 g","1.5 g","150 g","0.15 g"],a:0,exp:"0.015 kg × 1000 = 15 g."}
+    ]
+  },
+  cinematica:{
+    teoria:[
+      {q:"Nel MRU la velocità è:",opts:["Costante nel tempo","Crescente","Decrescente","Variabile"],a:0,exp:"MRU = Moto Rettilineo Uniforme. 'Uniforme' significa velocità costante → nessuna accelerazione."},
+      {q:"La formula dello spazio nel MRU è:",opts:["s = s₀ + v·t","s = ½·v·t²","s = v²·t","s = v/t"],a:0,exp:"Velocità costante → posizione cresce linearmente: s = s₀ + v·t."},
+      {q:"Nel MRUA, la velocità varia:",opts:["Linearmente nel tempo","Con t²","In modo casuale","Non varia"],a:0,exp:"v(t) = v₀ + a·t è una relazione lineare in t — il grafico v-t è una retta."},
+      {q:"La caduta libera è un esempio di:",opts:["MRUA","MRU","Moto casuale","Moto circolare"],a:0,exp:"Accelerazione costante g ≈ 9.81 m/s² verso il basso → è un MRUA verticale."},
+      {q:"Nel vuoto, sasso e piuma cadono:",opts:["Alla stessa velocità","Il sasso più veloce","La piuma più veloce","Dipende dalla forma"],a:0,exp:"Galileo: nel vuoto a = g per tutti i corpi, indipendentemente dalla massa. Rivoluzionario!"},
+      {q:"L'accelerazione media vale:",opts:["Δv / Δt","v·t","Δs / Δt","F·m"],a:0,exp:"a = Δv / Δt: variazione di velocità diviso tempo trascorso."},
+      {q:"g sulla Terra vale circa:",opts:["9.81 m/s²","9.81 m/s","9.81 km/s²","6.67 m/s²"],a:0,exp:"g ≈ 9.81 m/s² — l'accelerazione di qualsiasi oggetto in caduta libera sulla Terra."},
+      {q:"Nel moto parabolico, la componente orizzontale è:",opts:["MRU (v costante)","MRUA","Decelerata","Nulla"],a:0,exp:"Orizzontale: nessuna forza → MRU. Verticale: gravità → MRUA. Le due componenti sono indipendenti!"},
+      {q:"La formula v² = v₀² + 2·a·Δs è utile per:",opts:["Trovare v senza conoscere t","Trovare t","Solo in caduta libera","Trovare l'altezza"],a:0,exp:"Questa formula elimina il tempo dall'equazione — perfetta quando t è incognita."},
+      {q:"Un corpo lanciato orizzontalmente cade verticalmente come:",opts:["Un corpo in caduta libera","Più lentamente","Più velocemente","Non cade"],a:0,exp:"La componente verticale è indipendente da quella orizzontale: cade esattamente come in caduta libera."}
+    ],
+    calcolo:[
+      {q:"v=10 m/s, t=5 s (MRU). Spazio percorso?",opts:["50 m","2 m","0.5 m","500 m"],a:0,exp:"s = v·t = 10×5 = 50 m."},
+      {q:"a=9.81 m/s², v₀=0, t=3 s. Velocità finale?",opts:["29.4 m/s","3.27 m/s","9.81 m/s","19.6 m/s"],a:0,exp:"v = v₀ + a·t = 0 + 9.81×3 = 29.43 m/s."},
+      {q:"v₀=4 m/s, a=2 m/s², t=3 s. Spazio?",opts:["21 m","18 m","24 m","12 m"],a:0,exp:"s = v₀t + ½at² = 4×3 + ½×2×9 = 12+9 = 21 m."},
+      {q:"Da v=0 a v=15 m/s in 5 s. Accelerazione?",opts:["3 m/s²","75 m/s²","0.33 m/s²","10 m/s²"],a:0,exp:"a = Δv/Δt = 15/5 = 3 m/s²."},
+      {q:"Caduta libera: spazio in t=2 s? (g=10 m/s²)",opts:["20 m","10 m","40 m","5 m"],a:0,exp:"h = ½gt² = ½×10×4 = 20 m."},
+      {q:"v₀=20 m/s, a=−4 m/s², t=4 s. Velocità?",opts:["4 m/s","36 m/s","16 m/s","−4 m/s"],a:0,exp:"v = 20 + (−4)×4 = 20−16 = 4 m/s."},
+      {q:"MRU: 200 m in 40 s. Velocità media?",opts:["5 m/s","8000 m/s","0.2 m/s","50 m/s"],a:0,exp:"v = s/t = 200/40 = 5 m/s."},
+      {q:"Con a=3 m/s² (v₀=0), dopo quanto si raggiunge v=12 m/s?",opts:["4 s","36 s","0.25 s","9 s"],a:0,exp:"t = Δv/a = 12/3 = 4 s."},
+      {q:"Caduta da h=80 m (g=10). Velocità a terra?",opts:["40 m/s","80 m/s","28 m/s","20 m/s"],a:0,exp:"v² = 2gh = 1600 → v = 40 m/s."},
+      {q:"v₀=2, a=3 m/s², t=4 s. Spazio?",opts:["32 m","14 m","24 m","8 m"],a:0,exp:"s = 2×4 + ½×3×16 = 8+24 = 32 m."}
+    ]
+  },
+  dinamica:{
+    teoria:[
+      {q:"La prima legge di Newton riguarda:",opts:["L'inerzia","F=ma","Azione e reazione","La gravità"],a:0,exp:"Prima legge (inerzia): in assenza di forze nette il corpo resta fermo o in MRU."},
+      {q:"La seconda legge di Newton:",opts:["F = m·a","F = m·v","F = m/a","F = a/m"],a:0,exp:"F = m·a: forza risultante = massa × accelerazione."},
+      {q:"L'unità SI della forza è:",opts:["Newton (N)","Joule (J)","Pascal (Pa)","Watt (W)"],a:0,exp:"1 N = 1 kg·m/s²."},
+      {q:"La terza legge di Newton afferma:",opts:["Azione = −Reazione","F = ma","v = costante","Energia si conserva"],a:0,exp:"Per ogni forza agisce una forza uguale e contraria: F₁₂ = −F₂₁."},
+      {q:"Il peso di un corpo è:",opts:["P = m·g","P = m·a","P = m/g","P = g/m"],a:0,exp:"P = m·g in Newton. Attenzione: il peso è una forza, non una massa!"},
+      {q:"Su piano inclinato θ, la componente del peso lungo il piano è:",opts:["m·g·sinθ","m·g·cosθ","m·g·tanθ","m·g"],a:0,exp:"La componente parallela al piano (che fa scivolare) è mg·sinθ. Quella perpendicolare (che determina N) è mg·cosθ."},
+      {q:"Se F_netta = 0, il corpo:",opts:["Ha velocità costante (o è fermo)","Accelera","Decelera sempre","È necessariamente fermo"],a:0,exp:"Prima legge: F=0 → a=0 → v=costante. Può anche muoversi in MRU!"},
+      {q:"L'inerzia di un corpo è proporzionale alla:",opts:["Massa","Velocità","Peso","Forma"],a:0,exp:"Massa = misura dell'inerzia. Un'auto (1000 kg) si ferma molto più difficilmente di una bici (15 kg)."},
+      {q:"La forza normale su piano orizzontale vale:",opts:["N = m·g (verso l'alto)","N = m·g (verso il basso)","N > m·g","N = 0"],a:0,exp:"Su piano orizzontale N bilancia esattamente il peso: N = mg, diretta verso l'alto."},
+      {q:"Sulla Luna (g≈1.6 m/s²), la tua massa:",opts:["Rimane uguale","Si riduce di 6×","Diventa zero","Aumenta"],a:0,exp:"La massa è una proprietà intrinseca del corpo — non cambia. Il peso (= m·g) cambia perché g è diverso."}
+    ],
+    calcolo:[
+      {q:"m=8 kg, a=3 m/s². Forza risultante?",opts:["24 N","2.67 N","11 N","5 N"],a:0,exp:"F = m·a = 8×3 = 24 N."},
+      {q:"F=45 N, m=9 kg. Accelerazione?",opts:["5 m/s²","405 m/s²","0.2 m/s²","4 m/s²"],a:0,exp:"a = F/m = 45/9 = 5 m/s²."},
+      {q:"Peso di 75 kg sulla Terra (g=9.81)?",opts:["735.8 N","75 N","765 N","7.65 N"],a:0,exp:"P = m·g = 75×9.81 ≈ 735.8 N."},
+      {q:"Piano a 30°, m=4 kg (g=10). Componente peso lungo piano?",opts:["20 N","34.6 N","40 N","10 N"],a:0,exp:"F‖ = mg·sin30° = 4×10×0.5 = 20 N."},
+      {q:"F=100 N produce a=4 m/s². Massa?",opts:["25 kg","400 kg","0.04 kg","96 kg"],a:0,exp:"m = F/a = 100/4 = 25 kg."},
+      {q:"m=3 kg su piano orizzontale, μ=0.4 (g=10). Forza d'attrito?",opts:["12 N","0.4 N","30 N","7.5 N"],a:0,exp:"N=mg=30 N. Ffr=μ·N=0.4×30=12 N."},
+      {q:"F=60 N su m=6 kg, v₀=5 m/s, t=3 s. Velocità finale?",opts:["35 m/s","5 m/s","60 m/s","30 m/s"],a:0,exp:"a=60/6=10 m/s². v=5+10×3=35 m/s."},
+      {q:"Due forze opposte F₁=30 N, F₂=18 N su m=4 kg. Accelerazione?",opts:["3 m/s²","12 m/s²","0 m/s²","7.5 m/s²"],a:0,exp:"F_netta=30−18=12 N. a=12/4=3 m/s²."},
+      {q:"Peso di 60 kg sulla Luna (g=1.6 m/s²)?",opts:["96 N","600 N","37.5 N","60 N"],a:0,exp:"P=m·g=60×1.6=96 N (contro i 588 N sulla Terra)."},
+      {q:"Piano a 45°, m=2 kg, μ=0.3 (g=10). Forza di attrito?",opts:["4.24 N","6 N","14.1 N","3 N"],a:0,exp:"N=mg·cos45°=2×10×0.707≈14.1 N. Ffr=0.3×14.1≈4.24 N."}
+    ]
+  },
+  energia:{
+    teoria:[
+      {q:"Il lavoro è definito come:",opts:["W = F·s·cosθ","W = m·v²","W = m·g·h","W = F/s"],a:0,exp:"W = F·s·cosθ, dove θ è l'angolo tra forza e spostamento."},
+      {q:"L'unità SI del lavoro è:",opts:["Joule (J)","Newton (N)","Watt (W)","Pascal (Pa)"],a:0,exp:"1 J = 1 N·m = 1 kg·m²/s²."},
+      {q:"L'energia cinetica è:",opts:["Eₖ = ½·m·v²","Eₖ = m·v","Eₖ = m·g·h","Eₖ = F·v"],a:0,exp:"Eₖ = ½mv² — cresce col quadrato della velocità. Raddoppiare la velocità quadruplica Eₖ!"},
+      {q:"L'energia potenziale gravitazionale è:",opts:["Eₚ = m·g·h","Eₚ = ½·m·v²","Eₚ = m·g","Eₚ = F·h"],a:0,exp:"Eₚ = mgh. Se raddoppia h, raddoppia Eₚ. Se raddoppia m, raddoppia Eₚ."},
+      {q:"Se la velocità raddoppia, l'energia cinetica:",opts:["Quadruplica","Raddoppia","Rimane uguale","Si dimezza"],a:0,exp:"Eₖ ∝ v². v→2v implica Eₖ→4Eₖ. Ecco perché frenare a 100 km/h richiede 4× la distanza rispetto a 50 km/h!"},
+      {q:"Il principio di conservazione dell'energia meccanica:",opts:["Eₖ + Eₚ = costante (senza attrito)","Eₖ = costante","L'energia si crea dal nulla","Solo Eₚ si conserva"],a:0,exp:"In assenza di forze dissipative: Eₖ+Eₚ = cost. La montagna russa, il pendolo, la Luna che orbita."},
+      {q:"La potenza è:",opts:["P = W/t","P = F·t","P = E·t","P = m·g·v"],a:0,exp:"P = W/t — lavoro per unità di tempo, in Watt (W)."},
+      {q:"Il lavoro di una forza perpendicolare allo spostamento è:",opts:["Zero","Massimo","Uguale a F·s","Negativo"],a:0,exp:"W = F·s·cos90° = 0. La forza normale e la forza centripeta non compiono lavoro!"},
+      {q:"Quando un corpo cade, l'energia potenziale:",opts:["Si converte in cinetica","Si perde","Rimane uguale","Si converte in termica"],a:0,exp:"Senza attrito: ΔEₚ = −ΔEₖ. L'energia si trasforma, non si perde."},
+      {q:"1 Watt equivale a:",opts:["1 J/s","1 J·s","1 N/m","1 kg·m/s"],a:0,exp:"1 W = 1 J/s. Una lampadina da 60 W trasferisce 60 joule ogni secondo."}
+    ],
+    calcolo:[
+      {q:"m=3 kg, v=4 m/s. Energia cinetica?",opts:["24 J","12 J","48 J","6 J"],a:0,exp:"Eₖ = ½×3×16 = 24 J."},
+      {q:"m=2 kg, h=5 m (g=9.81). Energia potenziale?",opts:["98.1 J","10 J","49.1 J","196 J"],a:0,exp:"Eₚ = 2×9.81×5 = 98.1 J."},
+      {q:"F=15 N, s=8 m, θ=0°. Lavoro?",opts:["120 J","15 J","1.9 J","23 J"],a:0,exp:"W = 15×8×1 = 120 J."},
+      {q:"Eₖ=200 J, m=4 kg. Velocità?",opts:["10 m/s","50 m/s","7.07 m/s","100 m/s"],a:0,exp:"v = √(2Eₖ/m) = √(400/4) = √100 = 10 m/s."},
+      {q:"P=500 W, t=20 s. Lavoro svolto?",opts:["10000 J","25 J","480 J","520 J"],a:0,exp:"W = P·t = 500×20 = 10000 J."},
+      {q:"Caduta da h=1.25 m nel vuoto (g=10). Velocità a terra?",opts:["5 m/s","2.5 m/s","12.5 m/s","1 m/s"],a:0,exp:"mgh = ½mv² → v = √(2gh) = √25 = 5 m/s."},
+      {q:"m=5 kg, da v=0 a v=6 m/s. Variazione Eₖ?",opts:["90 J","30 J","180 J","15 J"],a:0,exp:"ΔEₖ = ½×5×36 − 0 = 90 J."},
+      {q:"W=3600 J, t=1 min. Potenza?",opts:["60 W","3600 W","216000 W","1 W"],a:0,exp:"P = W/t = 3600/60 = 60 W."},
+      {q:"F=20 N, s=5 m, θ=60°. Lavoro?",opts:["50 J","100 J","86.6 J","173 J"],a:0,exp:"W = 20×5×cos60° = 100×0.5 = 50 J."},
+      {q:"m=2 kg cade da h=10 m, a h=5 m velocità? (g=10)",opts:["10 m/s","14.1 m/s","7.07 m/s","20 m/s"],a:0,exp:"Eₚ persa = mg×5 = 100 J = Eₖ. v = √(2×100/2) = 10 m/s."}
+    ]
+  }
+};
+
+// Quiz engine
+const qSt={};
+function initQ(sec,kind){
+  const key=sec+kind;
+  qSt[key]={qs:QUIZ[sec][kind],cur:0,score:0,answered:false};
+  renderQ(sec,kind);
+}
+function qEl(sec){
+  return document.getElementById('quiz'+sec.charAt(0).toUpperCase()+sec.slice(1));
+}
+function renderQ(sec,kind){
+  const key=sec+kind;
+  const st=qSt[key];
+  const el=qEl(sec);
+  if(!st)return;
+  const {qs,cur,score}=st;
+  if(cur>=qs.length){
+    const pct=Math.round(score/qs.length*100);
+    const msg=pct>=80?'Eccellente! 🎉':pct>=60?'Bene, riprova le domande sbagliate 💪':'Rileggi la teoria e riprova 📖';
+    el.innerHTML=`<div class="quiz-done"><span class="quiz-score-big">${score}/${qs.length}</span><div class="quiz-msg">${pct}% − ${msg}</div><button class="quiz-restart" onclick="initQ('${sec}','${kind}')">&#x1F504; Riprova</button></div>`;
+    return;
+  }
+  const q=qs[cur];
+  el.innerHTML=`<div class="quiz-hd"><span>Domanda ${cur+1} / ${qs.length}</span><span>${score} ✓</span></div>
+<div class="quiz-bar-wrap"><div class="quiz-bar-fill" style="width:${cur/qs.length*100}%"></div></div>
+<div class="quiz-q">${q.q}</div>
+<div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-btn" onclick="ansQ('${sec}','${kind}',${i})">${o}</button>`).join('')}</div>
+<div id="qx_${key}"></div>
+<div class="quiz-nav">${cur>0?`<button class="quiz-back" onclick="prevQ('${sec}','${kind}')">&#x2190; Indietro</button>`:''}<button class="quiz-next" id="qn_${key}" onclick="nextQ('${sec}','${kind}')" disabled>Avanti &#x2192;</button></div>`;
+}
+function ansQ(sec,kind,chosen){
+  const key=sec+kind;
+  const st=qSt[key];
+  if(st.answered)return;
+  st.answered=true;
+  const q=st.qs[st.cur];
+  qEl(sec).querySelectorAll('.quiz-btn').forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add('correct');else if(i===chosen)b.classList.add('wrong');});
+  if(chosen===q.a)st.score++;
+  document.getElementById('qx_'+key).innerHTML=`<div class="quiz-exp ${chosen===q.a?'ok':'no'}">${chosen===q.a?'✓ Corretto!':'✗ Sbagliato.'} ${q.exp}</div>`;
+  document.getElementById('qn_'+key).disabled=false;
+}
+function nextQ(sec,kind){const key=sec+kind;qSt[key].cur++;qSt[key].answered=false;renderQ(sec,kind);}
+function prevQ(sec,kind){const key=sec+kind;if(qSt[key].cur>0){qSt[key].cur--;qSt[key].answered=false;renderQ(sec,kind);}}
+
+document.querySelectorAll('.quiz-kinds button').forEach(b=>{
+  b.addEventListener('click',function(){
+    const sec=this.dataset.sec,kind=this.dataset.qkind;
+    this.closest('.quiz-kinds').querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    initQ(sec,kind);
+  });
+});
+['grandezze','cinematica','dinamica','energia'].forEach(s=>initQ(s,'teoria'));
+</script>
+</body>
+</html>
